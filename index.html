@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A simple voting eligibility checker.">
+    <title>VoteReady | Voting Eligibility Checker</title>
+    <style>
+        :root {
+            --ink: #17232f;
+            --muted: #66727d;
+            --paper: #f4f7f6;
+            --surface: #ffffff;
+            --line: #d9e2e0;
+            --teal: #087f8c;
+            --teal-dark: #06616b;
+            --coral: #e97858;
+            --shadow: 0 24px 60px rgba(23, 35, 47, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-width: 320px;
+            color: var(--ink);
+            background: var(--paper);
+            font-family: Georgia, "Times New Roman", serif;
+        }
+
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: min(1120px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 24px 0;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--ink);
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            display: grid;
+            width: 34px;
+            height: 34px;
+            place-items: center;
+            color: #fff;
+            background: var(--teal);
+            border-radius: 10px 10px 10px 2px;
+            font-family: Arial, sans-serif;
+            font-size: 0.82rem;
+        }
+
+        .header-note {
+            color: var(--muted);
+            font-family: Arial, sans-serif;
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        main {
+            width: min(1120px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 58px 0 90px;
+        }
+
+        .hero {
+            position: relative;
+            max-width: 730px;
+            margin-bottom: 45px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin: 0 0 18px;
+            color: var(--coral);
+            font-family: Arial, sans-serif;
+            font-size: 0.76rem;
+            font-weight: bold;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            max-width: 700px;
+            margin: 0;
+            font-size: clamp(2.6rem, 7vw, 5.25rem);
+            font-weight: normal;
+            line-height: 0.98;
+            letter-spacing: -0.035em;
+        }
+
+        .hero-copy {
+            max-width: 520px;
+            margin: 24px 0 0;
+            color: var(--muted);
+            font-family: Arial, sans-serif;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .checker-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .panel {
+            padding: clamp(24px, 4vw, 42px);
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-panel {
+            border-top: 4px solid var(--teal);
+        }
+
+        .result-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 320px;
+            background: var(--ink);
+            border-color: var(--ink);
+            color: #fff;
+        }
+
+        .panel-label {
+            margin: 0 0 12px;
+            color: var(--teal);
+            font-family: Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .result-panel .panel-label {
+            color: #8cd5d8;
+        }
+
+        h2 {
+            margin: 0 0 12px;
+            font-size: 1.85rem;
+            font-weight: normal;
+        }
+
+        .form-help {
+            margin: 0 0 30px;
+            color: var(--muted);
+            font-family: Arial, sans-serif;
+            font-size: 0.93rem;
+            line-height: 1.55;
+        }
+
+        .field-label {
+            display: block;
+            margin-bottom: 9px;
+            font-family: Arial, sans-serif;
+            font-size: 0.88rem;
+            font-weight: bold;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        #age {
+            width: 100%;
+            min-height: 54px;
+            padding: 0 16px;
+            color: var(--ink);
+            background: #fbfcfc;
+            border: 1px solid #b9c9c7;
+            border-radius: 9px;
+            font-family: Arial, sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 160ms ease, box-shadow 160ms ease;
+        }
+
+        #age:focus {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 4px rgba(8, 127, 140, 0.15);
+        }
+
+        .check-button {
+            min-height: 54px;
+            padding: 0 23px;
+            color: #fff;
+            background: var(--teal);
+            border: 0;
+            border-radius: 9px;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            font-size: 0.92rem;
+            font-weight: bold;
+            white-space: nowrap;
+            transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+        }
+
+        .check-button:hover {
+            background: var(--teal-dark);
+            box-shadow: 0 8px 18px rgba(8, 127, 140, 0.22);
+            transform: translateY(-2px);
+        }
+
+        .check-button:focus-visible {
+            outline: 3px solid var(--coral);
+            outline-offset: 3px;
+        }
+
+        .result-message {
+            margin: 28px 0 0;
+            color: #fff;
+            font-size: clamp(1.7rem, 4vw, 2.55rem);
+            line-height: 1.12;
+        }
+
+        .result-note {
+            margin: 40px 0 0;
+            color: #aebdc1;
+            font-family: Arial, sans-serif;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        footer {
+            padding: 20px;
+            color: var(--muted);
+            border-top: 1px solid var(--line);
+            font-family: Arial, sans-serif;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        @media (max-width: 700px) {
+            .site-header,
+            main {
+                width: min(100% - 28px, 520px);
+            }
+
+            .site-header {
+                padding: 18px 0;
+            }
+
+            .header-note {
+                display: none;
+            }
+
+            main {
+                padding: 46px 0 64px;
+            }
+
+            .hero {
+                margin-bottom: 32px;
+            }
+
+            h1 {
+                font-size: clamp(2.65rem, 14vw, 4rem);
+            }
+
+            .checker-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .input-row {
+                flex-direction: column;
+            }
+
+            .check-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <a class="brand" href="#top" aria-label="VoteReady home">
+            <span class="brand-mark" aria-hidden="true">VR</span>
+            <span>VoteReady</span>
+        </a>
+        <span class="header-note">Your voice matters</span>
+    </header>
+
+    <main id="top">
+        <section class="hero" aria-labelledby="page-title">
+            <p class="eyebrow">A quick first step</p>
+            <h1 id="page-title">Check Your Voting Eligibility</h1>
+            <p class="hero-copy">Enter your age below to see the result from our simple eligibility checker.</p>
+        </section>
+
+        <section class="checker-layout" aria-label="Voting eligibility checker">
+            <div class="panel form-panel">
+                <p class="panel-label">Step 01 / Details</p>
+                <h2>Tell us your age</h2>
+                <p class="form-help">Use your age in whole years. We will show your result instantly.</p>
+                <label class="field-label" for="age">Your age</label>
+                <div class="input-row">
+                    <input type="text" id="age" placeholder="e.g. 21" inputmode="numeric" autocomplete="off" aria-describedby="age-help">
+                    <button class="check-button" type="button" onclick="myFunction()">Check eligibility</button>
+                </div>
+                <span id="age-help" class="form-help">Please enter numbers only.</span>
+            </div>
+
+            <div class="panel result-panel" aria-live="polite">
+                <div>
+                    <p class="panel-label">Step 02 / Result</p>
+                    <h2>Your result</h2>
+                    <p id="demo" class="result-message">Waiting for your details.</p>
+                </div>
+                <p class="result-note">This result is based on the information you provide.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>Designed by Zera_Hub</footer>
+
+<script>
+    function myFunction(){
+        let age = document.getElementById("age").value;
+        let demo = document.getElementById("demo");
+
+       if (isNaN(age)) {
+            demo.innerHTML = "invalid input";
+            return;
+        }
+
+        if (age > 18) {
+            demo.innerHTML = "You're elegible to vote";
+        } else {
+            demo.innerHTML = "You're not elegible to vote";
+        }
+
+    }
+</script>
+
+</body>
+</html>
